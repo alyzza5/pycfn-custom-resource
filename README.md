@@ -3,6 +3,9 @@ A helper object to create AWS Cloudformation Lambda-backed CustomResources in py
 
 Please see [pycfn_elasticsearch](https://github.com/elelsee/pycfn-elasticsearch) for an example.
 
+# Python3.7
+Updated to Python 3 by me, Alyssa Sandore, using the python 2to3 tool.
+
 ### Example
 ``` python
 from pycfn_custom_resource.lambda_backed import CustomResource
@@ -24,7 +27,7 @@ class myCustomResource(CustomResource):
     def delete(self):
         # Delete operations do not return result data
         return None
-      
+
 
 def lambda_handler(event, context):
     resource = myCustomResource(event)

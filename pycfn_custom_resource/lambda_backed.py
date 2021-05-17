@@ -1,4 +1,4 @@
-import util
+from . import util
 import requests
 import json
 import uuid
@@ -112,20 +112,20 @@ class CustomResource(object):
             if isinstance(self.result_text, dict):
                 try:
                     self.result_attributes = { "Data" : self.result_text }
-                    log.info(u"Command %s-%s succeeded", self.logicalresourceid, self.requesttype)
-                    log.debug(u"Command %s output: %s", self.logicalresourceid, self.result_text)
+                    log.info("Command %s-%s succeeded", self.logicalresourceid, self.requesttype)
+                    log.debug("Command %s output: %s", self.logicalresourceid, self.result_text)
                 except:
-                    log.error(u"Command %s-%s returned invalid data: %s", self.logicalresourceid,
+                    log.error("Command %s-%s returned invalid data: %s", self.logicalresourceid,
                               self.requesttype, self.result_text)
                     success = False
                     self.result_attributes = {}
             else:
-                raise ValueError(u"Results must be a JSON object")
+                raise ValueError("Results must be a JSON object")
         except:
             e = sys.exc_info()
-            log.error(u"Command %s-%s failed", self.logicalresourceid, self.requesttype)
-            log.debug(u"Command %s output: %s", self.logicalresourceid, e[0])
-            log.debug(u"Command %s traceback: %s", self.logicalresourceid, traceback.print_tb(e[2]))
+            log.error("Command %s-%s failed", self.logicalresourceid, self.requesttype)
+            log.debug("Command %s output: %s", self.logicalresourceid, e[0])
+            log.debug("Command %s traceback: %s", self.logicalresourceid, traceback.print_tb(e[2]))
             success = False
 
         self.send_result(success, self.result_attributes)
@@ -147,7 +147,7 @@ class CustomResource(object):
             source_attributes["Reason"] = "Unknown Failure"
 
         source_attributes.update(attributes)
-        log.debug(u"Sending result: %s", source_attributes)
+        log.debug("Sending result: %s", source_attributes)
         self._put_response(source_attributes)
 
     @util.retry_on_failure(max_tries=10)
@@ -160,9 +160,9 @@ class CustomResource(object):
     def _put_response(self, data):
         try:
             self.__send(data)
-            log.info(u"CloudFormation successfully sent response %s", data["Status"])
-        except IOError, e:
-            log.exception(u"Failed sending CloudFormation response")
+            log.info("CloudFormation successfully sent response %s", data["Status"])
+        except IOError as e:
+            log.exception("Failed sending CloudFormation response")
 
     def __repr__(self):
         return str(self._event)

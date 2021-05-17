@@ -40,7 +40,7 @@ def _extract_http_error(resp):
     else:
         retry_mode = 'RETRIABLE'
 
-    return RemoteError(resp.status_code, u"HTTP Error %s : %s" % (resp.status_code, resp.text), retry_mode)
+    return RemoteError(resp.status_code, "HTTP Error %s : %s" % (resp.status_code, resp.text), retry_mode)
 
 
 def exponential_backoff(max_tries, max_sleep=20):
@@ -63,18 +63,18 @@ def retry_on_failure(max_tries=5, http_error_extractor=_extract_http_error):
             durations = exponential_backoff(max_tries)
             for i in durations:
                 if i > 0:
-                    log.debug(u"Sleeping for %f seconds before retrying", i)
+                    log.debug("Sleeping for %f seconds before retrying", i)
                     time.sleep(i)
 
                 try:
                     return f(*args, **kwargs)
-                except SSLError, e:
-                    log.exception(u"SSLError")
+                except SSLError as e:
+                    log.exception("SSLError")
                     raise RemoteError(None, str(e), retry_mode='TERMINAL')
-                except ConnectionError, e:
-                    log.exception(u"ConnectionError")
+                except ConnectionError as e:
+                    log.exception("ConnectionError")
                     last_error = RemoteError(None, str(e))
-                except HTTPError, e:
+                except HTTPError as e:
                     last_error = http_error_extractor(e.response)
                     if last_error.retry_mode == 'TERMINAL':
                         raise last_error
@@ -82,8 +82,8 @@ def retry_on_failure(max_tries=5, http_error_extractor=_extract_http_error):
                         extend_backoff(durations)
 
                     log.exception(last_error.strerror)
-                except Timeout, e:
-                    log.exception(u"Timeout")
+                except Timeout as e:
+                    log.exception("Timeout")
                     last_error = RemoteError(None, str(e))
             else:
                 raise last_error
